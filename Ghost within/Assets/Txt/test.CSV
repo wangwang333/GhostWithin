@@ -1,3 +1,4 @@
-Sign,ID,Character,Content,Transfer,Effect,Object
-#,0,Player,Who are you,1,,
-#,1,NPC,I'm NPC,,,
+Sign,ID,Character,Position,Content,Transfer,Effect,Object
+#,0,Player,Left,Who are you?,1,,
+#,1,Nightfall,Right,I'm NPC,2,,
+#,2,Player,Left,Cool!,,,
