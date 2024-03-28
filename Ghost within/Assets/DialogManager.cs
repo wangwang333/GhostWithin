@@ -4,7 +4,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using JetBrains.Annotations;
-
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 public class dialog : MonoBehaviour
 {
@@ -46,7 +47,7 @@ public class dialog : MonoBehaviour
     /// <summary>
     /// 当前的对话索引值
     /// </summary>
-    public int dialogIndex=1;
+    public int dialogIndex;
     
     /// <summary>
     /// 对话文本，按行分割
@@ -58,10 +59,20 @@ public class dialog : MonoBehaviour
     /// </summary>
     public Button nextButton;
 
+    /// <summary>
+    /// 选项按钮预制体
+    /// </summary>
+    public GameObject optionButton;
+
+    /// <summary>
+    /// 选项按钮父节点，用于自动排列
+    /// </summary>
+    public Transform buttonGroup;
+
     // Start is called before the first frame update
     private void Awake()
     {
-        imageDic["MC"] = sprites[0];
+        imageDic["Player"] = sprites[0];
         imageDic["Nightfall"] = sprites[1];     
     }
     void Start()
@@ -109,16 +120,26 @@ public class dialog : MonoBehaviour
     }
     public void ShowDialogRow()
     {
-        foreach(var row in dialogRows) 
+        for(int i = 0; i < dialogRows.Length; i++) 
         {
-            string[] cells = row.Split(',');
-            if (cells[0] == "#" && int.Parse(cells[1]) == dialogIndex) 
+            string[] cells = dialogRows[i].Split(',');
+            if (cells[0] == "#" && int.Parse(cells[1]) == dialogIndex)
             {
                 UpdateText(cells[2], cells[4]);
                 UpdateImage(cells[2], cells[3]);
 
                 dialogIndex = int.Parse(cells[5]);
+                nextButton.gameObject.SetActive(true);
                 break;
+            }
+            else if (cells[0] == "&" && int.Parse(cells[1]) == dialogIndex) 
+            {
+                nextButton.gameObject.SetActive(false);
+                GenerateOption(i);
+            }
+            else if (cells[0]=="END"&& int.Parse(cells[1])== dialogIndex) 
+            {
+                Debug.Log("剧情结束");
             }
         }
     }
@@ -126,5 +147,44 @@ public class dialog : MonoBehaviour
     public void OnClickNext()
     {
         ShowDialogRow();
+    }
+    public void GenerateOption(int _index)
+    {
+        string[] cells = dialogRows[_index].Split(',');
+        if (cells[0]=="&") 
+        {
+            GameObject button = Instantiate(optionButton, buttonGroup);
+            //绑定按钮事件
+            button.GetComponentInChildren<TMP_Text>().text = cells[4];
+            button.GetComponent<Button>().onClick.AddListener
+                (
+                    delegate 
+                    {
+                        OnOptionClick(int.Parse(cells[5]));
+                    }
+                 );
+            GenerateOption(_index + 1);
+        }
+        
+    }
+    public void OnOptionClick(int _id) 
+    {
+        dialogIndex = _id;
+        ShowDialogRow();
+        for (int i = 0; i < buttonGroup.childCount; i++)
+        { 
+            Destroy(buttonGroup.GetChild(i).gameObject);
+        }
+    }
+    public void OptionEffect(string _effect, int _param, string _target)
+    {
+        if (_effect == "Friendship")
+        { 
+            
+        }
+        else if (_effect == "Dark")
+        {
+
+        }
     }
 }
