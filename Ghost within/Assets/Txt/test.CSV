@@ -2,8 +2,8 @@ Sign,ID,Character,Position,Content,Transfer,Effect,Object
 #,0,Nightfall,Right,Who are you?,1,,
 #,1,Player,Left,I'm player,2,,
 #,2,Nightfall,Rght,What can you do?,3,,
-&,3,,,Help you,6,,
-&,4,,,Kill you,6,,
-&,5,,,Nothing,6,,
+&,3,,,Help you,6,Friendship@1,Nightfall
+&,4,,,Kill you,6,Dark@1,Player
+&,5,,,Nothing,6,Dark@1,Player
 #,6,Nightfall,Right,Fine,7,,
 END,7,,,,,,

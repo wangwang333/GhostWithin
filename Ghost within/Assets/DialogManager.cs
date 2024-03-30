@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using JetBrains.Annotations;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
+using System.Text.RegularExpressions;
+
+[System.Serializable]
 
 public class dialog : MonoBehaviour
 {
@@ -69,11 +72,19 @@ public class dialog : MonoBehaviour
     /// </summary>
     public Transform buttonGroup;
 
+    public List<Person> people= new List<Person>();
+
     // Start is called before the first frame update
     private void Awake()
     {
         imageDic["Player"] = sprites[0];
-        imageDic["Nightfall"] = sprites[1];     
+        imageDic["Nightfall"] = sprites[1];  
+        Person person = new Person();
+        person.name = "Nightfall";
+        people.Add(person);
+        Person player= new Person();
+        player.name = "Player";
+        people.Add(player);
     }
     void Start()
     {
@@ -161,6 +172,14 @@ public class dialog : MonoBehaviour
                     delegate 
                     {
                         OnOptionClick(int.Parse(cells[5]));
+                        if (cells[6] != "")
+                        {
+                            Debug.Log("添加按钮附加效果");
+                            string[] effect = cells[6].Split("@");
+
+                            cells[7] = Regex.Replace(cells[7], @"[\r\n]", "");
+                            OptionEffect(effect[0], int.Parse(effect[1]), cells[7]);
+                        }
                     }
                  );
             GenerateOption(_index + 1);
@@ -179,12 +198,24 @@ public class dialog : MonoBehaviour
     public void OptionEffect(string _effect, int _param, string _target)
     {
         if (_effect == "Friendship")
-        { 
-            
+        {
+            foreach (var person in people)
+            {
+                if (person.name == _target)
+                {
+                    person.Friendship += _param;
+                }
+            }
         }
         else if (_effect == "Dark")
         {
-
+            foreach (var person in people)
+            {
+                if (person.name == _target)
+                {
+                    person.Dark += _param;
+                }
+            }
         }
     }
 }
